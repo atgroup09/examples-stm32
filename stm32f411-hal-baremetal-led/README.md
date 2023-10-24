@@ -1,0 +1,67 @@
+# examples-stm32
+
+## stm32f411-hal-baremetal-led
+
+**Hardware Platform**
+
+- STM32F411 (ARM Cortex-M4 32-bit RISC)
+  - WeAct Black Pill v.3.0
+
+**Software Platform**
+
+- IDE
+  - Eclipse 2022-09 (4.25.0), build 20220908-1902
+  - STM32CubeMX
+- Compiler
+  - ARM GNU GCC
+- Language
+  - C
+- Frameworks
+  - STM32-HAL
+- Operation System
+  - BareMetal (no OS)
+
+**Build modes**
+
+- Release
+  - code, init.data > FLASH
+  - other data > RAM, CMRAM
+- Debug
+  - all > RAM
+
+**Clock Configuration**
+
+- HSE
+  - 25 MHz
+- SYSCLK
+  - 100 MHz
+- HCLK
+  - 100 MHz
+- AHB-bus, Core, Memory, DMA
+  - 100 MHz
+- Cortex System Timer
+  - 100 MHz
+- APB1 Peripherals
+  - 50  MHz
+- APB1 Timers
+  - 100 MHz
+- APB2 Peripherals
+  - 100 MHz
+- APB2 Timers
+  - 100 MHz
+- LSE
+  - 32.768 kHz
+- RTC
+  - 32.768 kHz
+- System Timer
+  - 1-tick == 1 msec
+
+**Project**
+
+- Main task
+  - increment counter MainCnt
+- Led task
+  - LED_USER > PC13
+  - blink mode by System Timer interrupt and Tick Counter
+    - 1000 msec for Release mode
+    - 5000 msec for Debug mode
