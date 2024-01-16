@@ -150,11 +150,11 @@ typedef struct PlcDO_t_
 
 /** @def Settings by default
  */
-#define PLC_DO_MODE_DEF      	                 PLC_DO_MODE_OFF
+#define PLC_DO_MODE_DEF      	                 PLC_DO_MODE_NORM
 #define PLC_DO_PWM_T_DEF                         PLC_DO_PWM_T__1HZ
 #define PLC_DO_PWM_D_DEF    		             PLC_DO_PWM_D__MIN
 #define PLC_DO_PWM_ALLOW_DEF           			 BIT_FALSE
-#define PLC_DO_NORM_VAL_DEF                 	 BIT_FALSE
+#define PLC_DO_NORM_VAL_DEF                 	 BIT_TRUE
 
 /** @def Status codes
  */

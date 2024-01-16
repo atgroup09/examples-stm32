@@ -41,6 +41,9 @@ static uint8_t DO_Init(void)
 		}
 	}
 
+	//select channel by default
+	DO_SetCh(PLC_DO_00);
+
 	return (BIT_TRUE);
 }
 

@@ -165,33 +165,32 @@ uint8_t PlcDO_SetMode(PlcDO_t *DOIn, uint8_t ModeIn)
 {
 	if(DOIn)
 	{
-		if(ModeIn == PLC_DO_MODE_OFF || ModeIn == PLC_DO_MODE_NORM || ModeIn == PLC_DO_MODE_PWM)
+		if(DOIn->Mode != ModeIn)
 		{
-			if(ModeIn == PLC_DO_MODE_OFF)
+			DOIn->Mode = ((ModeIn == PLC_DO_MODE_OFF || ModeIn == PLC_DO_MODE_NORM || ModeIn == PLC_DO_MODE_PWM) ? ModeIn : PLC_DO_MODE_OFF);
+		}
+
+		if(DOIn->Mode == PLC_DO_MODE_OFF)
+		{
+			PlcDO_Stop(DOIn);
+		}
+		else
+		{
+			PlcDO_SetPwmT(DOIn, DOIn->PwmT);
+
+			if(DOIn->Mode == PLC_DO_MODE_NORM)
 			{
-				PlcDO_Stop(DOIn);
+				PlcDO_SetNormVal(DOIn, DOIn->NormVal);
 			}
 			else
 			{
-				if(ModeIn == PLC_DO_MODE_NORM)
-				{
-					PlcDO_SetNormVal(DOIn, DOIn->NormVal);
-				}
-				else
-				{
-					PlcDO_SetPwmD(DOIn, DOIn->PwmD);
-				}
-
-				if(DOIn->Mode == PLC_DO_MODE_OFF)
-				{
-					PlcDO_Start(DOIn);
-				}
+				PlcDO_SetPwmD(DOIn, DOIn->PwmD);
 			}
 
-			DOIn->Mode = ModeIn;
-
-			return (BIT_TRUE);
+			PlcDO_Start(DOIn);
 		}
+
+		return (BIT_TRUE);
 	}
 	return (BIT_FALSE);
 }
@@ -204,19 +203,20 @@ uint8_t PlcDO_SetNormVal(PlcDO_t *DOIn, uint8_t ValIn)
 		if(DOIn->NormVal != ValIn)
 		{
 			DOIn->NormVal = ((ValIn) ? BIT_TRUE : BIT_FALSE);
+		}
 
-			if(DOIn->Mode == PLC_DO_MODE_NORM)
+		if(DOIn->Mode == PLC_DO_MODE_NORM)
+		{
+			if(!DOIn->NormVal)
 			{
-				if(!DOIn->NormVal)
-				{
-					PlcDO_SetTimPulse(DOIn, PLC_DO_PWM_D__MIN);
-				}
-				else
-				{
-					PlcDO_SetTimPulse(DOIn, PLC_DO_PWM_D__MAX);
-				}
+				PlcDO_SetTimPulse(DOIn, PLC_DO_PWM_D__MIN);
+			}
+			else
+			{
+				PlcDO_SetTimPulse(DOIn, PLC_DO_PWM_D__MAX);
 			}
 		}
+
 		return (BIT_TRUE);
 	}
 	return (BIT_FALSE);
@@ -241,12 +241,13 @@ uint8_t PlcDO_SetPwmT(PlcDO_t *DOIn, float ValIn)
 			{
 				DOIn->PwmT = ValIn;
 			}
-
-			if(DOIn->Mode == PLC_DO_MODE_PWM)
-			{
-				PlcDO_SetTimPeriod(DOIn, DOIn->PwmT);
-			}
 		}
+
+		if(DOIn->Mode == PLC_DO_MODE_NORM || DOIn->Mode == PLC_DO_MODE_PWM)
+		{
+			PlcDO_SetTimPeriod(DOIn, DOIn->PwmT);
+		}
+
 		return (BIT_TRUE);
 	}
 	return (BIT_FALSE);
@@ -271,12 +272,13 @@ uint8_t PlcDO_SetPwmD(PlcDO_t *DOIn, float ValIn)
 			{
 				DOIn->PwmD = ValIn;
 			}
-
-			if(DOIn->Mode == PLC_DO_MODE_PWM)
-			{
-				PlcDO_SetTimPulse(DOIn, DOIn->PwmD);
-			}
 		}
+
+		if(DOIn->Mode == PLC_DO_MODE_PWM)
+		{
+			PlcDO_SetTimPulse(DOIn, DOIn->PwmD);
+		}
+
 		return (BIT_TRUE);
 	}
 	return (BIT_FALSE);
